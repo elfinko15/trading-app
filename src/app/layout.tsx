@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         {/* Main scrollable area */}
-        <div className="main-scroll" style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', minWidth: 0 }}>
+        <div className="main-scroll" style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', minWidth: 0, height: '100%' }}>
           {children}
         </div>
 

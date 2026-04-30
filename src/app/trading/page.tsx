@@ -24,7 +24,7 @@ export default function TradingPage() {
   const position  = portfolio.positions[selectedSymbol];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Header title="Trading" />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>

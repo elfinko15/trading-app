@@ -4,10 +4,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { useUserStore } from '@/store/userStore';
+import { useSettingsStore } from '@/store/settingsStore';
 
 export default function RegisterPage() {
   const { signUp, loading } = useAuthStore();
   const { setName } = useUserStore();
+  const { resetTutorial } = useSettingsStore();
   const router = useRouter();
 
   const [username, setUsername] = useState('');
@@ -29,6 +31,7 @@ export default function RegisterPage() {
     const err = await signUp(username, email, password);
     if (err) { setError(err); return; }
     setName(username);
+    resetTutorial();
     router.push('/dashboard');
   };
 
