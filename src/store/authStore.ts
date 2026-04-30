@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase';
 
 export interface AuthUser {
   id: string;
-  email: string;
   username: string;
   avatar: string;
 }
@@ -14,8 +13,8 @@ interface AuthState {
   user: AuthUser | null;
   loading: boolean;
   initialized: boolean;
-  signIn: (email: string, password: string) => Promise<string | null>;
-  signUp: (username: string, email: string, password: string) => Promise<string | null>;
+  signIn: (username: string, password: string) => Promise<string | null>;
+  signUp: (username: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   loadSession: () => Promise<void>;
   syncStats: (stats: {
@@ -24,6 +23,9 @@ interface AuthState {
     total_pnl_pct: number; avatar: string;
   }) => Promise<void>;
 }
+
+const fakeEmail = (username: string) =>
+  `${username.toLowerCase().replace(/[^a-z0-9_]/g, '')}@trademaster.local`;
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -45,7 +47,6 @@ export const useAuthStore = create<AuthState>()(
             set({
               user: {
                 id: session.user.id,
-                email: session.user.email ?? '',
                 username: profile?.username ?? 'Trader',
                 avatar: profile?.avatar ?? '🧑‍💼',
               },
@@ -60,11 +61,12 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signIn: async (email, password) => {
+      signIn: async (username, password) => {
         set({ loading: true });
         try {
+          const email = fakeEmail(username);
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) return error.message;
+          if (error) return 'Benutzername oder Passwort falsch.';
           if (data.user) {
             const { data: profile } = await supabase
               .from('profiles')
@@ -74,8 +76,7 @@ export const useAuthStore = create<AuthState>()(
             set({
               user: {
                 id: data.user.id,
-                email: data.user.email ?? '',
-                username: profile?.username ?? 'Trader',
+                username: profile?.username ?? username,
                 avatar: profile?.avatar ?? '🧑‍💼',
               },
             });
@@ -88,10 +89,9 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signUp: async (username, email, password) => {
+      signUp: async (username, password) => {
         set({ loading: true });
         try {
-          // Check username uniqueness
           const { data: existing } = await supabase
             .from('profiles')
             .select('id')
@@ -99,6 +99,7 @@ export const useAuthStore = create<AuthState>()(
             .single();
           if (existing) return 'Dieser Benutzername ist bereits vergeben.';
 
+          const email = fakeEmail(username);
           const { data, error } = await supabase.auth.signUp({
             email,
             password,
@@ -109,7 +110,6 @@ export const useAuthStore = create<AuthState>()(
             set({
               user: {
                 id: data.user.id,
-                email: data.user.email ?? '',
                 username,
                 avatar: '🧑‍💼',
               },

@@ -7,14 +7,14 @@ import { useAuthStore } from '@/store/authStore';
 export default function LoginPage() {
   const { signIn, loading } = useAuthStore();
   const router = useRouter();
-  const [email,    setEmail]    = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error,    setError]    = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const err = await signIn(email, password);
+    const err = await signIn(username, password);
     if (err) { setError(err); return; }
     router.push('/dashboard');
   };
@@ -53,23 +53,24 @@ export default function LoginPage() {
         padding: '36px 32px',
         boxShadow: '0 40px 100px rgba(0,0,0,0.85), inset 0 1px 0 rgba(200,160,255,0.12), 0 0 100px rgba(100,50,220,0.12)',
       }}>
-        <h2 style={{ fontSize: '17px', fontWeight: 700, color: 'rgba(255,255,255,0.80)', margin: '0 0 22px', textAlign: 'center', letterSpacing: '-0.01em' }}>
+        <h2 style={{ fontSize: '17px', fontWeight: 700, color: 'rgba(255,255,255,0.80)', margin: '0 0 22px', textAlign: 'center' }}>
           Willkommen zurück 👋
         </h2>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <div>
             <label style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(160,130,255,0.65)', display: 'block', marginBottom: '7px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              E-Mail
+              Benutzername
             </label>
             <input
-              type="email"
+              type="text"
               className="glass-input"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="deine@email.de"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="z.B. ProTrader99"
               required
-              autoComplete="email"
+              autoComplete="username"
+              autoCapitalize="none"
             />
           </div>
 
@@ -92,7 +93,7 @@ export default function LoginPage() {
             <div style={{
               padding: '11px 14px', borderRadius: '12px', fontSize: '13px',
               background: 'rgba(240,78,78,0.10)', border: '1px solid rgba(240,78,78,0.22)',
-              color: '#F87171', display: 'flex', alignItems: 'center', gap: '8px',
+              color: '#F87171',
             }}>
               ⚠️ {error}
             </div>

@@ -13,7 +13,6 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const [username, setUsername] = useState('');
-  const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
   const [confirm,  setConfirm]  = useState('');
   const [error,    setError]    = useState('');
@@ -28,7 +27,7 @@ export default function RegisterPage() {
     if (password.length < 6)  { setError('Passwort muss mindestens 6 Zeichen lang sein.'); return; }
     if (password !== confirm)  { setError('Passwörter stimmen nicht überein.'); return; }
 
-    const err = await signUp(username, email, password);
+    const err = await signUp(username, password);
     if (err) { setError(err); return; }
     setName(username);
     resetTutorial();
@@ -54,7 +53,7 @@ export default function RegisterPage() {
           Konto erstellen
         </h1>
         <p style={{ fontSize: '13px', color: 'rgba(180,160,255,0.55)', margin: 0 }}>
-          Kostenlos · Kein echtes Geld · Sofort loslegen
+          Wähle einen Benutzernamen und leg los
         </p>
       </div>
 
@@ -69,7 +68,7 @@ export default function RegisterPage() {
         padding: '32px',
         boxShadow: '0 40px 100px rgba(0,0,0,0.85), inset 0 1px 0 rgba(200,160,255,0.12), 0 0 100px rgba(100,50,220,0.12)',
       }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
 
           <div>
             <label style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(160,130,255,0.65)', display: 'block', marginBottom: '7px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
@@ -85,22 +84,7 @@ export default function RegisterPage() {
               required
               minLength={3} maxLength={20}
               autoComplete="username"
-            />
-          </div>
-
-          <div>
-            <label style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(160,130,255,0.65)', display: 'block', marginBottom: '7px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              E-Mail
-              <span style={{ color: 'rgba(255,255,255,0.22)', fontWeight: 400, textTransform: 'none', letterSpacing: 0, marginLeft: '6px' }}>keine Bestätigung nötig</span>
-            </label>
-            <input
-              type="email"
-              className="glass-input"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="deine@email.de"
-              required
-              autoComplete="email"
+              autoCapitalize="none"
             />
           </div>
 
@@ -140,7 +124,7 @@ export default function RegisterPage() {
             <div style={{
               padding: '11px 14px', borderRadius: '12px', fontSize: '13px',
               background: 'rgba(240,78,78,0.10)', border: '1px solid rgba(240,78,78,0.22)',
-              color: '#F87171', display: 'flex', alignItems: 'center', gap: '8px',
+              color: '#F87171',
             }}>
               ⚠️ {error}
             </div>
@@ -162,7 +146,7 @@ export default function RegisterPage() {
           <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.07)' }} />
         </div>
 
-        <div style={{ textAlign: 'center', fontSize: '14px', color: 'rgba(255,255,255,0.42)' }}>
+        <div style={{ textAlign: 'center', fontSize: '14px' }}>
           <Link href="/login" style={{ color: '#A78BFA', fontWeight: 700, textDecoration: 'none' }}>
             🚀 Jetzt anmelden
           </Link>
