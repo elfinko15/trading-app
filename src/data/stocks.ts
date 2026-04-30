@@ -1,0 +1,186 @@
+import type { Stock, Candle } from '@/domain/models';
+
+function generateCandles(basePrice: number, days = 90, volatility = 0.02): Candle[] {
+  const candles: Candle[] = [];
+  let price = basePrice * 0.85;
+  const now = Date.now();
+  const DAY = 86_400_000;
+
+  for (let i = days; i >= 0; i--) {
+    const drift = (Math.random() - 0.48) * volatility;
+    const open  = price;
+    const close = open * (1 + drift);
+    const swing = Math.abs(close - open) + open * 0.005;
+    const high  = Math.max(open, close) + Math.random() * swing;
+    const low   = Math.min(open, close) - Math.random() * swing;
+    const volume = Math.floor(1_000_000 + Math.random() * 5_000_000);
+    candles.push({ timestamp: now - i * DAY, open, high, low, close, volume });
+    price = close;
+  }
+  return candles;
+}
+
+export const STOCKS: Stock[] = [
+  {
+    symbol: 'AAPL',
+    name: 'Apple Inc.',
+    assetClass: 'stock',
+    sector: 'Technology',
+    currentPrice: 189.30,
+    previousClose: 186.80,
+    dayHigh: 191.20,
+    dayLow: 186.40,
+    volume: 62_340_000,
+    marketCap: 2_950_000_000_000,
+    peRatio: 29.4,
+    dividendYield: 0.54,
+    candles: generateCandles(189.30, 90, 0.018),
+    description: 'Apple Inc. designt und vermarktet Unterhaltungselektronik, Software und Online-Dienste.',
+  },
+  {
+    symbol: 'MSFT',
+    name: 'Microsoft Corp.',
+    assetClass: 'stock',
+    sector: 'Technology',
+    currentPrice: 415.60,
+    previousClose: 410.20,
+    dayHigh: 418.90,
+    dayLow: 409.80,
+    volume: 23_150_000,
+    marketCap: 3_080_000_000_000,
+    peRatio: 36.2,
+    dividendYield: 0.72,
+    candles: generateCandles(415.60, 90, 0.016),
+    description: 'Microsoft entwickelt und lizenziert Software, Hardware und Cloud-Services weltweit.',
+  },
+  {
+    symbol: 'NVDA',
+    name: 'NVIDIA Corp.',
+    assetClass: 'stock',
+    sector: 'Technology',
+    currentPrice: 875.40,
+    previousClose: 852.60,
+    dayHigh: 882.10,
+    dayLow: 848.30,
+    volume: 45_680_000,
+    marketCap: 2_150_000_000_000,
+    peRatio: 65.8,
+    dividendYield: 0.03,
+    candles: generateCandles(875.40, 90, 0.035),
+    description: 'NVIDIA ist der führende Anbieter von GPUs für Gaming, KI und Rechenzentren.',
+  },
+  {
+    symbol: 'GOOGL',
+    name: 'Alphabet Inc.',
+    assetClass: 'stock',
+    sector: 'Technology',
+    currentPrice: 162.50,
+    previousClose: 160.40,
+    dayHigh: 164.80,
+    dayLow: 159.90,
+    volume: 28_920_000,
+    marketCap: 2_010_000_000_000,
+    peRatio: 24.1,
+    dividendYield: 0.0,
+    candles: generateCandles(162.50, 90, 0.020),
+    description: 'Alphabet ist Mutterkonzern von Google, dem weltgrößten Suchmaschinenbetreiber.',
+  },
+  {
+    symbol: 'AMZN',
+    name: 'Amazon.com Inc.',
+    assetClass: 'stock',
+    sector: 'Consumer Cyclical',
+    currentPrice: 192.80,
+    previousClose: 189.60,
+    dayHigh: 195.40,
+    dayLow: 188.70,
+    volume: 38_450_000,
+    marketCap: 2_020_000_000_000,
+    peRatio: 43.5,
+    dividendYield: 0.0,
+    candles: generateCandles(192.80, 90, 0.022),
+    description: 'Amazon ist der weltgrößte Online-Händler und führender Cloud-Anbieter (AWS).',
+  },
+  {
+    symbol: 'TSLA',
+    name: 'Tesla Inc.',
+    assetClass: 'stock',
+    sector: 'Automotive',
+    currentPrice: 248.50,
+    previousClose: 240.80,
+    dayHigh: 252.30,
+    dayLow: 239.40,
+    volume: 118_760_000,
+    marketCap: 792_000_000_000,
+    peRatio: 52.3,
+    dividendYield: 0.0,
+    candles: generateCandles(248.50, 90, 0.045),
+    description: 'Tesla entwickelt Elektrofahrzeuge und Energiespeicherlösungen.',
+  },
+  {
+    symbol: 'SPY',
+    name: 'SPDR S&P 500 ETF',
+    assetClass: 'etf',
+    sector: 'Broad Market',
+    currentPrice: 524.30,
+    previousClose: 520.80,
+    dayHigh: 526.10,
+    dayLow: 519.90,
+    volume: 72_340_000,
+    marketCap: 0,
+    peRatio: 24.8,
+    dividendYield: 1.28,
+    candles: generateCandles(524.30, 90, 0.010),
+    description: 'Der SPY bildet den S&P 500 Index ab — 500 der größten US-Unternehmen.',
+  },
+  {
+    symbol: 'QQQ',
+    name: 'Invesco QQQ Trust',
+    assetClass: 'etf',
+    sector: 'Technology',
+    currentPrice: 456.80,
+    previousClose: 452.40,
+    dayHigh: 459.20,
+    dayLow: 451.60,
+    volume: 48_230_000,
+    marketCap: 0,
+    peRatio: 32.4,
+    dividendYield: 0.52,
+    candles: generateCandles(456.80, 90, 0.015),
+    description: 'Der QQQ bildet den NASDAQ-100 ab — die 100 größten Tech-Unternehmen.',
+  },
+  {
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    assetClass: 'crypto',
+    sector: 'Cryptocurrency',
+    currentPrice: 68_450,
+    previousClose: 65_800,
+    dayHigh: 69_200,
+    dayLow: 65_100,
+    volume: 38_900_000_000,
+    marketCap: 1_350_000_000_000,
+    peRatio: 0,
+    dividendYield: 0,
+    candles: generateCandles(68_450, 90, 0.055),
+    description: 'Bitcoin ist die erste und größte Kryptowährung nach Marktkapitalisierung.',
+  },
+  {
+    symbol: 'ETH',
+    name: 'Ethereum',
+    assetClass: 'crypto',
+    sector: 'Cryptocurrency',
+    currentPrice: 3_560,
+    previousClose: 3_420,
+    dayHigh: 3_620,
+    dayLow: 3_390,
+    volume: 18_200_000_000,
+    marketCap: 428_000_000_000,
+    peRatio: 0,
+    dividendYield: 0,
+    candles: generateCandles(3_560, 90, 0.065),
+    description: 'Ethereum ist eine dezentrale Blockchain-Plattform für Smart Contracts und DApps.',
+  },
+];
+
+export const getStock = (symbol: string) => STOCKS.find(s => s.symbol === symbol);
