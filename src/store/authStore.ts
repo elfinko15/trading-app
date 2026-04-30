@@ -92,28 +92,23 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (username, password) => {
         set({ loading: true });
         try {
-          const { data: existing } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('username', username)
-            .single();
-          if (existing) return 'Dieser Benutzername ist bereits vergeben.';
+          // Server route creates user auto-confirmed via service role key
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+          });
+          const json = await res.json();
+          if (!res.ok) return json.error ?? 'Registrierung fehlgeschlagen.';
 
-          const email = fakeEmail(username);
-          const { data, error } = await supabase.auth.signUp({
-            email,
+          // Sign in immediately (user is confirmed)
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: fakeEmail(username),
             password,
-            options: { data: { username } },
           });
           if (error) return error.message;
           if (data.user) {
-            set({
-              user: {
-                id: data.user.id,
-                username,
-                avatar: '🧑‍💼',
-              },
-            });
+            set({ user: { id: data.user.id, username, avatar: '🧑‍💼' } });
           }
           return null;
         } catch (e) {
